@@ -5,17 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Protocol Écorché</title>
     
+    <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Coach">
     <meta name="theme-color" content="#ff3b30">
 
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23050505'/%3E%3Ctext x='50' y='65' font-size='50' text-anchor='middle' fill='%23ff3b30' font-family='sans-serif' font-weight='bold'%3EC%3C/text%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23050505'/%3E%3Ctext x='50' y='65' font-size='50' text-anchor='middle' fill='%23ff3b30' font-family='sans-serif' font-weight='bold'%3EC%3C/text%3E%3C/svg%3E">
     
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -24,7 +26,6 @@
             --text: #f0f0f0; --muted: #888;
         }
         
-        /* ARCHITECTURE FLEXBOX STRICTE (Anti-débordement) */
         html, body { margin: 0; padding: 0; background-color: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; height: 100%; height: 100dvh; overflow: hidden; width: 100vw; -webkit-tap-highlight-color: transparent; }
         * { box-sizing: border-box; }
         ::-webkit-scrollbar { display: none; }
@@ -32,12 +33,9 @@
         #root { display: flex; flex-direction: column; height: 100%; width: 100%; }
         
         .app-header { flex: 0 0 auto; background: radial-gradient(circle at 50% 0%, var(--accent-glow) 0%, var(--bg) 80%); padding: calc(15px + env(safe-area-inset-top)) 20px 15px; border-bottom: 1px solid var(--border); z-index: 10; }
-        
         .app-content { flex: 1 1 auto; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 15px; width: 100%; max-width: 600px; margin: 0 auto; }
-        
         .app-nav { flex: 0 0 auto; background: rgba(5,5,5,0.95); backdrop-filter: blur(15px); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 10px 0 calc(10px + env(safe-area-inset-bottom)); z-index: 10; }
         
-        /* Typographie et Composants */
         .title { font-family: 'Oswald', sans-serif; font-size: 32px; font-weight: 700; margin: 0; letter-spacing: -1px; text-transform: uppercase; line-height: 1; }
         .subtitle { font-size: 11px; letter-spacing: 3px; color: var(--accent); font-weight: 900; text-transform: uppercase; }
         
@@ -45,22 +43,18 @@
         .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .quote-box { border-left: 4px solid var(--accent); padding-left: 12px; margin: 10px 0 15px; font-style: italic; color: #ccc; font-size: 12px; line-height: 1.5; }
         
-        /* Accordéons compacts */
         .accordion { background: var(--card); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 8px; overflow: hidden; transition: border-color 0.2s; }
         .accordion-header { padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; font-weight: 700; cursor: pointer; font-size: 14px; }
         .accordion-body { padding: 0 16px 14px; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 5px; padding-top: 12px; animation: fadeIn 0.2s; }
         
-        /* Carrousel Jours */
         .day-picker { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 5px; flex-shrink: 0; }
         .day-pill { padding: 10px 18px; background: var(--card-solid); border: 1px solid var(--border); border-radius: 20px; font-weight: 700; font-size: 12px; white-space: nowrap; cursor: pointer; color: var(--muted); transition: 0.2s; }
         .day-pill.active { background: var(--accent); color: #000; border-color: var(--accent); box-shadow: 0 0 12px var(--accent-glow); }
 
-        /* Boutons de Navigation */
         .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--muted); font-size: 10px; font-weight: 700; letter-spacing: 1px; transition: 0.2s; cursor: pointer; width: 20%; }
         .nav-item.active { color: var(--accent); }
         .nav-icon { font-size: 20px; margin-bottom: 4px; }
         
-        /* Formulaires */
         input[type=range], input[type=number], input[type=text] { width: 100%; background: var(--card-solid); border: 1px solid var(--border); color: var(--text); padding: 12px; border-radius: 8px; font-family: 'Inter'; font-size: 14px; outline: none; }
         input[type=range] { -webkit-appearance: none; background: transparent; padding: 0; }
         input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 24px; width: 24px; border-radius: 6px; background: var(--accent); cursor: pointer; margin-top: -10px; }
@@ -72,7 +66,6 @@
         .theme-btn { width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--border); cursor: pointer; display: inline-block; margin-right: 8px; margin-bottom: 8px; transition: 0.2s; }
         .theme-btn.active { transform: scale(1.15); border-color: #fff; }
         
-        /* Switch iOS style */
         .toggle-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .switch { position: relative; display: inline-block; width: 46px; height: 26px; flex-shrink: 0; }
         .switch input { opacity: 0; width: 0; height: 0; }
@@ -81,15 +74,12 @@
         input:checked + .slider { background-color: var(--accent-glow); border-color: var(--accent); }
         input:checked + .slider:before { transform: translateX(20px); background-color: var(--accent); }
 
-        /* Progress Bar */
         .progress-container { width: 100%; background: var(--card-solid); border-radius: 10px; height: 6px; overflow: hidden; margin-top: 8px; border: 1px solid var(--border); }
         .progress-bar { height: 100%; background: var(--accent); transition: width 0.3s ease; }
 
-        /* Modales */
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 100; display: flex; justify-content: center; align-items: center; padding: 15px; animation: fadeIn 0.2s; }
         .modal { background: var(--bg); border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 400px; padding: 20px; max-height: 85vh; overflow-y: auto; }
         
-        /* Séance Active */
         .active-workout-screen { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: var(--bg); z-index: 200; display: flex; flex-direction: column; }
         .aw-header { flex: 0 0 auto; padding: calc(15px + env(safe-area-inset-top)) 15px 15px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
         .aw-content { flex: 1 1 auto; overflow-y: auto; padding: 15px; }
@@ -97,22 +87,29 @@
         
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        /* Gouttes d'eau */
-        .water-drop { font-size: 22px; filter: grayscale(1); opacity: 0.3; transition: 0.2s; cursor: pointer; }
+        .water-drop { font-size: 22px; filter: grayscale(1); opacity: 0.3; transition: 0.3s; cursor: pointer; }
         .water-drop.active { filter: grayscale(0); opacity: 1; transform: scale(1.1); }
         
-        /* Boutons Courses */
         .action-btn { background: var(--card-solid); border: 1px solid var(--border); color: var(--text); border-radius: 6px; padding: 8px 12px; font-size: 11px; font-weight: 700; cursor: pointer; transition: 0.2s; text-transform: uppercase; }
         .action-btn.primary { background: var(--accent); color: #000; border-color: var(--accent); }
+        .replace-anim { animation: flash 0.4s ease-out; }
+        @keyframes flash { 0% { color: var(--accent); } 100% { color: var(--text); } }
     </style>
 </head>
 <body>
     <div id="root"></div>
 
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW setup failed', err));
+            });
+        }
+    </script>
+
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
-        // --- AUDIO ENGINE ---
         const playBeep = (freq, vol = 0.5, duration = 0.2) => {
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -126,7 +123,6 @@
             } catch(e) {}
         };
 
-        // --- CONSTANTES ---
         const THEMES = ["#ff3b30", "#30d158", "#0a84ff", "#e8ff00", "#bf5af2", "#ffffff"];
         
         const EXERCISES_DB = {
@@ -193,7 +189,6 @@
         );
 
         function App() {
-            // STATE GLOBAL
             const [currentProfileId, setCurrentProfileId] = useState("profil1");
             const [tab, setTab] = useState("home"); 
             
@@ -202,18 +197,16 @@
             const [streak, setStreak] = useState(0);
             const [lastLog, setLastLog] = useState("");
             const [water, setWater] = useState(0);
-            const [groceryPrefs, setGroceryPrefs] = useState({}); // { "id": { altIdx: 0, isEditing: false } }
+            const [groceryPrefs, setGroceryPrefs] = useState({});
             
-            // UI STATES
             const [fastingProgress, setFastingProgress] = useState({ percent: 0, status: "", color: "" });
             const [batchCook, setBatchCook] = useState(false);
             const [modalInfo, setModalInfo] = useState(null);
             const [activeWorkout, setActiveWorkout] = useState(null);
 
-            const [openAccordion, setOpenAccordion] = useState(null); // Gère l'ouverture unique
+            const [openAccordion, setOpenAccordion] = useState(null);
             const [selectedDay, setSelectedDay] = useState(new Date().getDay() === 0 ? 6 : new Date().getDay() - 1);
 
-            // INITIALISATION ET SAUVEGARDE
             useEffect(() => {
                 try {
                     const saved = localStorage.getItem(`coach_app_${currentProfileId}`);
@@ -243,7 +236,6 @@
                 } catch(e) {}
             }, [profile, iaState, streak, water, lastLog, groceryPrefs, currentProfileId]);
 
-            // JEÛNE (Update chaque minute)
             useEffect(() => {
                 const updateFasting = () => {
                     const totalMins = new Date().getHours() * 60 + new Date().getMinutes();
@@ -259,7 +251,6 @@
                 return () => clearInterval(interval);
             }, []);
 
-            // --- FONCTIONS CENTRALES (COURSES & DIÈTE) ---
             const ratio = (profile.weight / 63) * iaState.cal_mult;
             
             const DIET_DATA = [
@@ -307,7 +298,48 @@
 
             const cleanString = (str) => str.replace(/[\u{1F300}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '').trim();
 
-            // --- VUES ---
+            const generateWeekWorkout = () => {
+                const rm = iaState.rep_mult; const eq = profile.equip;
+                const pullExo = eq.pullupBar ? "Tractions" : "Tirage dos inversé";
+                const dipExo = eq.pullupBar ? "Dips" : "Pompes";
+                const abExo = eq.abWheel ? "Roulette Abdos" : "Planche";
+                const lest = eq.vest ? " lestées (+10kg)" : "";
+                
+                return [
+                    { day: "LUNDI", label: "LUN", type: "FORCE HAUT", blocks: [
+                        { name: pullExo + lest, sets: 5, reps: `${Math.max(4, Math.round(profile.maxPullups * 0.4 * rm))} reps. Tempo 2-0-2. Repos 2 min.`, base: pullExo },
+                        { name: `Pompes diamant${lest}`, sets: 4, reps: `${Math.max(10, Math.round(profile.maxPushups * 0.4 * rm))} reps. Tempo contrôlé.`, base: "Pompes" },
+                        { name: dipExo + (eq.vest ? " lestés" : ""), sets: 4, reps: "8 à 12 reps. Repos 90s.", base: dipExo }
+                    ]},
+                    { day: "MARDI", label: "MAR", type: "GAINAGE", blocks: [
+                        { name: "Planche frontale", sets: 4, reps: eq.vest ? "45s avec Gilet." : "45s.", base: "Planche" },
+                        { name: "Relevés de jambes", sets: 4, reps: "15 reps. Lent à la descente.", base: "Relevés de jambes" },
+                        { name: "Dragon flag assisté", sets: 3, reps: "8 reps. Contrôle total.", base: "Dragon flag" },
+                        { name: abExo, sets: 4, reps: eq.abWheel ? "12 reps." : "45s.", base: abExo }
+                    ]},
+                    { day: "MERCREDI", label: "MER", type: "HIIT", blocks: [
+                        { name: `Marche rapide${lest}`, sets: 1, reps: "30 min. Rythme soutenu.", base: "Sprints" },
+                        { name: "HIIT Tabata", sets: 4, reps: "20s effort / 10s repos (Burpees).", base: "Sprints" }
+                    ]},
+                    { day: "JEUDI", label: "JEU", type: "FORCE v2", blocks: [
+                        { name: eq.pullupBar ? "Muscle-up négatifs" : pullExo, sets: 5, reps: eq.pullupBar ? "3 reps (Phase descente 4s)." : `${Math.max(5, Math.round(profile.maxPullups * 0.6 * rm))} reps.`, base: eq.pullupBar ? "Muscle-up négatifs" : pullExo },
+                        { name: `Pompes prise large${lest}`, sets: 4, reps: "15 reps. Focus pectoraux.", base: "Pompes" },
+                        { name: "Pike push-ups", sets: 4, reps: "12 reps. Épaules ciblées.", base: "Pike push-ups" }
+                    ]},
+                    { day: "VENDREDI", label: "VEN", type: "FULL BODY", blocks: [
+                        { name: `Complex: ${pullExo} + Pompes`, sets: 5, reps: "10 tractions / 20 pompes. Enchaîné.", base: pullExo },
+                        { name: "Sprints en côte", sets: 6, reps: "15s effort max.", base: "Sprints" }
+                    ]},
+                    { day: "SAMEDI", label: "SAM", type: "CARDIO", blocks: [
+                        { name: "Footing continu lent", sets: 1, reps: "30-45 min (Zone 2).", base: "Sprints" },
+                        { name: `Face Pulls`, sets: 3, reps: "15 reps. Posture.", base: "Face Pulls" }
+                    ]},
+                    { day: "DIMANCHE", label: "DIM", type: "REPOS", blocks: [
+                        { name: "Repos Total", sets: 1, reps: "Récupération.", base: "Planche" }
+                    ]}
+                ];
+            };
+
             const renderHome = () => (
                 <div className="app-content">
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 15 }}>
@@ -444,54 +476,19 @@
             };
 
             const renderWorkout = () => {
-                const rm = iaState.rep_mult; const eq = profile.equip;
-                const pullExo = eq.pullupBar ? "Tractions" : "Tirage dos inversé";
-                const dipExo = eq.pullupBar ? "Dips" : "Pompes";
-                const abExo = eq.abWheel ? "Roulette Abdos" : "Planche";
-                const lest = eq.vest ? " lestées (+10kg)" : "";
-                
-                const week = [
-                    { day: "LUNDI", label: "LUN", type: "FORCE HAUT", blocks: [
-                        { name: pullExo + lest, sets: 5, reps: `${Math.max(4, Math.round(profile.maxPullups * 0.4 * rm))} reps. Tempo 2-0-2. Repos 2 min.`, base: pullExo },
-                        { name: `Pompes diamant${lest}`, sets: 4, reps: `${Math.max(10, Math.round(profile.maxPushups * 0.4 * rm))} reps. Tempo contrôlé.`, base: "Pompes" },
-                        { name: dipExo + (eq.vest ? " lestés" : ""), sets: 4, reps: "8 à 12 reps. Repos 90s.", base: dipExo }
-                    ]},
-                    { day: "MARDI", label: "MAR", type: "GAINAGE", blocks: [
-                        { name: "Planche frontale", sets: 4, reps: eq.vest ? "45s avec Gilet." : "45s.", base: "Planche" },
-                        { name: "Relevés de jambes", sets: 4, reps: "15 reps. Lent à la descente.", base: "Relevés de jambes" },
-                        { name: abExo, sets: 4, reps: eq.abWheel ? "12 reps." : "45s.", base: abExo }
-                    ]},
-                    { day: "MERCREDI", label: "MER", type: "HIIT", blocks: [
-                        { name: `Marche rapide${lest}`, sets: 1, reps: "30 min. Rythme soutenu.", base: "Sprints" },
-                        { name: "HIIT Tabata", sets: 4, reps: "20s effort / 10s repos (Burpees).", base: "Sprints" }
-                    ]},
-                    { day: "JEUDI", label: "JEU", type: "FORCE v2", blocks: [
-                        { name: eq.pullupBar ? "Muscle-up négatifs" : pullExo, sets: 5, reps: eq.pullupBar ? "3 reps (Phase descente 4s)." : `${Math.max(5, Math.round(profile.maxPullups * 0.6 * rm))} reps.`, base: eq.pullupBar ? "Muscle-up négatifs" : pullExo },
-                        { name: `Pompes prise large${lest}`, sets: 4, reps: "15 reps. Focus pectoraux.", base: "Pompes" },
-                        { name: "Pike push-ups", sets: 4, reps: "12 reps. Épaules ciblées.", base: "Pike push-ups" }
-                    ]},
-                    { day: "VENDREDI", label: "VEN", type: "FULL BODY", blocks: [
-                        { name: `Complex: ${pullExo} + Pompes`, sets: 5, reps: "10 tractions / 20 pompes. Enchaîné.", base: pullExo },
-                        { name: "Sprints en côte", sets: 6, reps: "15s effort max.", base: "Sprints" }
-                    ]},
-                    { day: "SAMEDI", label: "SAM", type: "CARDIO", blocks: [
-                        { name: "Footing continu lent", sets: 1, reps: "30-45 min (Zone 2).", base: "Sprints" },
-                        { name: `Face Pulls`, sets: 3, reps: "15 reps. Posture.", base: "Face Pulls" }
-                    ]},
-                    { day: "DIMANCHE", label: "DIM", type: "REPOS", blocks: [
-                        { name: "Repos Total", sets: 1, reps: "Récupération.", base: "Planche" }
-                    ]}
-                ];
+                const week = generateWeekWorkout();
                 const activeW = week[selectedDay];
 
                 return (
                     <div className="app-content">
                         <div className="title" style={{marginBottom: 10}}>SÉANCE</div>
+                        
                         <div className="day-picker">
                             {week.map((w, i) => (
                                 <div key={i} className={`day-pill ${selectedDay === i ? 'active' : ''}`} onClick={() => setSelectedDay(i)}>{w.label}</div>
                             ))}
                         </div>
+
                         <div className="card" style={{border: "1px solid var(--accent)", marginTop: 5}}>
                             <div style={{display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 15}}>
                                 <strong style={{color: "var(--accent)", fontSize: 20, fontFamily: "'Oswald'"}}>{activeW.day}</strong>
@@ -562,7 +559,11 @@
 
             return (
                 <React.Fragment>
-                    {!activeWorkout && <div className="app-header"><div style={{ fontSize: 11, color: "var(--text)", fontWeight: 900, letterSpacing: 3 }}>{profile.name.toUpperCase()}</div></div>}
+                    {!activeWorkout && (
+                        <div className="app-header">
+                            <div style={{ fontSize: 11, color: "var(--text)", fontWeight: 900, letterSpacing: 3 }}>{profile.name.toUpperCase()}</div>
+                        </div>
+                    )}
                     
                     {!activeWorkout && tab === "home" && renderHome()}
                     {!activeWorkout && tab === "courses" && renderCourses()}
@@ -635,7 +636,7 @@
 
             return (
                 <div className="active-workout-screen">
-                    <div className="aw-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div className="aw-header">
                         <div className="title" style={{color: "var(--accent)"}}>{workout.day}</div>
                         <button style={{background: "var(--card-solid)", color: "var(--text)", border: "1px solid var(--border)", padding: "6px 10px", borderRadius: 6, fontWeight: 700, fontSize: 11}} onClick={onClose}>QUITTER</button>
                     </div>
@@ -666,7 +667,10 @@
                             </div>
                         ))}
                     </div>
-                    <div className="aw-footer"><button className="btn" onClick={() => { alert("Séance terminée. Beau travail."); onClose(); }}>TERMINER SÉANCE</button></div>
+                    
+                    <div className="aw-footer">
+                        <button className="btn" onClick={() => { alert("Séance terminée. Beau travail."); onClose(); }}>TERMINER SÉANCE</button>
+                    </div>
                 </div>
             );
         }
